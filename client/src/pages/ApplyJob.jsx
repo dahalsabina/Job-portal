@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, {useState, useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
-import { useState } from 'react'
+
 import Loading from '../components/Loading'
 import Navbar from '../components/Navbar'
 import { assets, jobsData } from '../assets/assets'
@@ -23,16 +23,19 @@ const ApplyJob = () => {
 
     
   }
-  useEffect(()=>{
-    if (jobs.length>0){
-      fetchJob()
+  useEffect(() => {
+    const fetchJob = async () => {
+      const data = jobs.filter(job => job._id === id);
+      if (data.length !== 0) {
+        setJobData(data[0]);
+        console.log(data[0]);
+      }
+    };
 
+    if (jobs.length > 0) {
+      fetchJob();
     }
-    
-
-  },[id,jobs]
-  
-  )
+  }, [id, jobs]);
   return JobData ? (
     <>
       <Navbar />
@@ -85,16 +88,16 @@ const ApplyJob = () => {
               <button className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10'>Apply Now</button>
             </div>
             {/*  Right Section More Jobs*/}
+            <div className='w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5'>
             <h2>More Jobs From {JobData.companyId.name}</h2>
             {jobs.filter(job => job._id!== JobData._id && job.companyId._id===JobData.companyId._id).
             filter(job =>true).slice(0,4)
             .map((job,index)=> <JobCard key={index} job={job} /> )
             
             }
-
-            <div>
-
             </div>
+ 
+            
           </div>
         </div>
       </div>
